@@ -1,7 +1,8 @@
 package ex
 
 import util.Optionals.Optional
-import util.Sequences.* // Assuming Sequence and related methods are here
+import util.Sequences.*
+import util.Sequences.Sequence.*
 
 // Represents a course offered on the platform
 trait Course:
@@ -12,7 +13,8 @@ trait Course:
 
 object Course:
   // Factory method for creating Course instances
-  def apply(courseId: String, title: String, instructor: String, category: String): Course = ???
+  def apply(courseId: String, title: String, instructor: String, category: String): Course = CourseImpl(courseId, title, instructor, category)
+  private case class CourseImpl(courseId: String, title: String, instructor: String, category: String) extends Course
 /**
  * Manages courses and student enrollments on an online learning platform.
  */
@@ -86,7 +88,32 @@ end OnlineCoursePlatform
 
 object OnlineCoursePlatform:
   // Factory method for creating an empty platform instance
-  def apply(): OnlineCoursePlatform = ??? // Fill Here!
+  def apply(): OnlineCoursePlatform = OnlineCoursePlatformImpl() // Fill Here!
+
+  private class OnlineCoursePlatformImpl() extends OnlineCoursePlatform:
+    private var courseList: Sequence[Course] = Nil()
+    private var studentSet: Sequence[(String, String)] = Nil()
+
+    def addCourse(course: Course): Unit = courseList = Cons(course, courseList)
+
+    def findCoursesByCategory(category: String): Sequence[Course] = courseList.filter(c => c.category == category)
+
+    def getCourse(courseId: String): Optional[Course] = courseList.find(c => c.courseId == courseId)
+
+    override def removeCourse(course: Course): Unit = courseList = courseList.filter(_ != course)
+
+    override def enrollStudent(studentId: String, courseId: String): Unit = studentSet = Cons((studentId, courseId), studentSet)
+
+    override def getStudentEnrollments(studentId: String): Sequence[Course] = courseList.filter(course => studentSet.filter(_._1 == studentId).map(_._2).contains(course.courseId))
+
+    override def isStudentEnrolled(studentId: String, courseId: String): Boolean = studentSet.contains((studentId, courseId))
+
+    override def unenrollStudent(studentId: String, courseId: String): Unit = studentSet = studentSet.filter(_ != (studentId, courseId))
+
+    override def isCourseAvailable(courseId: String): Boolean = courseList.map(x => x.courseId).contains(courseId)
+
+
+
 
 /**
  * Represents an online learning platform that offers courses and manages student enrollments.
