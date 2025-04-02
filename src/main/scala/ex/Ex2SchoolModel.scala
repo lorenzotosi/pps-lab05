@@ -9,11 +9,18 @@ object SchoolModel:
   private type Teacher = String
   private type Course = String
 
+  trait BasicSchool:
+    def setTeacherToCourse(teacher: Teacher, course: Course): BasicSchool
+    def courses: Sequence[Course]
+    def teachers: Sequence[Teacher]
+    def coursesOfATeacher(teacher: Teacher): Sequence[Course]
+    def hasTeacher(name: String): Boolean
+    def hasCourse(name: String): Boolean
 
-  class BasicSchool(private val school: Sequence[(Teacher, Course)] = Nil()):
+  private class BasicSchoolImpl(private val school: Sequence[(Teacher, Course)] = Nil()) extends BasicSchool:
 
-    def setTeacherToCourse(teacher: Teacher, course: Course): BasicSchool =
-      new BasicSchool(school.concat(Cons((teacher, course), Nil())))
+    def setTeacherToCourse(teacher: Teacher, course: Course): BasicSchoolImpl =
+      BasicSchoolImpl(school.concat(Cons((teacher, course), Nil())))
 
     def courses: Sequence[Course] =
       school.map((_, c) => c)
@@ -31,15 +38,14 @@ object SchoolModel:
       school.filter((_, c) => c == name) != Nil()
 
   object BasicSchool:
-    def emptySchool: BasicSchool = new BasicSchool()
+    def emptySchool: BasicSchool = new BasicSchoolImpl()
 
     def teacher(name: String): Teacher = name
 
     def course(name: String): Course = name
 
 @main def examples(): Unit =
-
-  val school = BasicSchool()
+  val school = emptySchool
   println(school.teachers) // Nil()
   println(school.courses) // Nil()
   println(school.hasTeacher("John")) // false
