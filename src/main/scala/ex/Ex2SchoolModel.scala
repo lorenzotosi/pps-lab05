@@ -32,10 +32,10 @@ object SchoolModel:
       school.filter((t, _) => t == teacher).map((_, c) => c)
 
     def hasTeacher(name: String): Boolean =
-      school.filter((t, _) => t == name) != Nil()
+      !school.filter((t, _) => t == name).isEmpty()
 
     def hasCourse(name: String): Boolean =
-      school.filter((_, c) => c == name) != Nil()
+      !school.filter((_, c) => c == name).isEmpty()
 
   object BasicSchool:
     def emptySchool: BasicSchool = new BasicSchoolImpl()

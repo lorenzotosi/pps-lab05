@@ -48,6 +48,10 @@ object Sequences: // Essentially, generic linkedlists
 
       def contains(e: A): Boolean = !sequence.find(_ == e).isEmpty
 
+      def isEmpty(): Boolean = sequence match
+        case Nil() => true
+        case _ => false
+
       def reverse(): Sequence[A] = sequence match
         case Cons(h, t) => t.reverse().concat(Cons(h, Nil()))
         case _ => Nil()
