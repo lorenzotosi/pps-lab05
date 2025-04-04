@@ -17,7 +17,7 @@ object SchoolModel:
     def hasTeacher(name: String): Boolean
     def hasCourse(name: String): Boolean
 
-  private class BasicSchoolImpl(private val school: Sequence[(Teacher, Course)] = Nil()) extends BasicSchool:
+  private class BasicSchoolImpl(private var school: Sequence[(Teacher, Course)] = Nil()) extends BasicSchool:
 
     def setTeacherToCourse(teacher: Teacher, course: Course): BasicSchoolImpl =
       BasicSchoolImpl(school.concat(Cons((teacher, course), Nil())))
